@@ -12,7 +12,7 @@ package.domain = org.test
 # (str) Source code where the main.py lives
 source.dir = .
 
-# (list) Source files to include (let empty to include all the files)
+# (list) Source files to include
 source.include_exts = py,png,jpg,jpeg,ttf,json
 
 # (str) Application versioning
@@ -27,8 +27,8 @@ android.api = 33
 # (int) Minimum API your APK will support
 android.minapi = 21
 
-# (str) Android NDK version to use (Locked to stable r25c release format)
-android.ndk = r25c
+# (str) Android NDK version to use (Isko khali chhod rahe hain kyunki env variable upar set kar diya hai)
+android.ndk = 
 
 # (int) Android NDK API to use
 android.ndk_api = 21
@@ -45,15 +45,9 @@ android.permissions = INTERNET
 # (bool) Skip byte compile for .py files
 android.skip_byte_compile = False
 
-# (str) Format used to package the app for release (apk or aab)
-android.release_artifact = apk
-
-# (str) Format used to package the app for debug (apk or aab)
+# (str) Format used to package the app for debug
 android.debug_artifact = apk
 
 [buildozer]
-# (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
 log_level = 2
-
-# (int) Display warning if buildozer is run as root (0 = False, 1 = True)
 warn_on_root = 1

@@ -38,14 +38,19 @@ jobs:
         pip3 install --upgrade pip
         pip3 install --upgrade buildozer cython virtualenv
 
+    # GitHub automatic NDK download karega jo fail nahi hota
+    - name: Set up Android SDK & NDK
+      id: setup-android
+      uses: android-actions/setup-android@v3
+      with:
+        api-level: 33
+        build-tools: 33.0.2
+        ndk-version: 25.2.9519653
+
     - name: Build with Buildozer
       run: |
         mkdir -p ~/.ccache
+        # GitHub ke download kiye NDK ka path use karne ke liye forcefully command dena
+        export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653
         buildozer android debug
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: package-apk
-        path: bin/*.apk
         

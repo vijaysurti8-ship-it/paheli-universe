@@ -1,1 +1,42 @@
+name: Build APK
 
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev liblzma-dev
+
+    - name: Install Pip Packages
+      run: |
+        pip install --upgrade Cython==0.29.36 buildozer virtualenv
+
+    - name: Build with Buildozer
+      run: |
+        cp .github/workflows/buildozer.spec ./buildozer.spec
+        export BUILDOZER_WARN_ON_ROOT=0
+        yes | buildozer android debug
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Paheli-Universe-APK
+        path: bin/*.apk
+        

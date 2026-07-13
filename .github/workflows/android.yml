@@ -38,30 +38,14 @@ jobs:
         pip3 install --upgrade pip
         pip3 install --upgrade buildozer cython virtualenv
 
-    - name: Set up Android SDK & NDK
-      uses: android-actions/setup-android@v3
-      with:
-        api-level: 33
-        build-tools: 33.0.2
-        ndk-version: 25.2.9519653
-
     - name: Build with Buildozer
       run: |
         mkdir -p ~/.ccache
-        # Agar spec file kisi sub-folder me hai toh ye script wahan jaakar build karegi
-        SPEC_PATH=$(find . -name "buildozer.spec" -print -quit)
-        if [ -n "$SPEC_PATH" ]; then
-          cd "$(dirname "$SPEC_PATH")"
-          echo "Found buildozer.spec in $(pwd)"
-          buildozer android debug
-        else
-          echo "ERROR: buildozer.spec file aapki repository me kahin nahi mili!"
-          exit 1
-        fi
+        buildozer android debug
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: package-apk
-        path: |
-          **/bin/*.apk
+        path: bin/*.apk
+        

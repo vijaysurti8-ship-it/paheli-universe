@@ -29,10 +29,9 @@ jobs:
     - name: Install System Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y ccache git zip unzip openjdk-17-jdk targetcli-fb \
-        libncurses5-dev libstdc++6:i386 libgtk2.0-0:i386 libpangox-1.0-0:i386 \
-        libpangoxft-1.0-0:i386 libidn12:i386 autoconf libtool pkg-config zlib1g-dev \
-        libgl1-mesa-dev libgles2-mesa-dev python3-pip python3-setuptools
+        sudo apt-get install -y ccache git zip unzip openjdk-17-jdk \
+        autoconf libtool pkg-config zlib1g-dev libgl1-mesa-dev \
+        libgles2-mesa-dev python3-pip python3-setuptools
 
     - name: Install Buildozer and Cython
       run: |
@@ -48,11 +47,8 @@ jobs:
 
     - name: Build with Buildozer
       run: |
-        # GitHub Runner par error se bachne ke liye ccache directory manually verify karna
         mkdir -p ~/.ccache
         buildozer android debug
-      env:
-        ANDROID_NDK_HOME: ${{ steps.setup-android.outputs.ndk-path }}
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4

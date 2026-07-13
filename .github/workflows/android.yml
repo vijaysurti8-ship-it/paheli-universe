@@ -22,7 +22,7 @@ jobs:
     - name: Install System Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev liblzma-dev
+        sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev liblzma-dev cmake
 
     - name: Install Pip Packages
       run: |
@@ -36,7 +36,7 @@ jobs:
         echo "package.domain = com.paheli.universe" >> buildozer.spec
         echo "source.dir = ." >> buildozer.spec
         echo "source.include_exts = py,png,jpg,kv,atlas,mp3,wav,json" >> buildozer.spec
-        echo "requirements = python3,pygame,sdl2_image,sdl2_mixer,sdl2_ttf" >> buildozer.spec
+        echo "requirements = python3==3.10.11,kivy,pygame,sdl2_image,sdl2_mixer,sdl2_ttf" >> buildozer.spec
         echo "version = 1.0" >> buildozer.spec
         echo "orientation = landscape" >> buildozer.spec
         echo "fullscreen = 1" >> buildozer.spec

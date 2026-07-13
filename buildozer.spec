@@ -19,7 +19,6 @@ source.include_exts = py,png,jpg,jpeg,ttf,json
 version = 0.1
 
 # (list) Application requirements
-# Python aur Pygame ko compile karne ke liye requirements
 requirements = python3,pygame
 
 # (int) Android API to use (Target SDK)
@@ -28,8 +27,8 @@ android.api = 33
 # (int) Minimum API your APK will support
 android.minapi = 21
 
-# (str) Android NDK version to use
-android.ndk = 25.2.9519653
+# (str) Android NDK version to use (Locked to stable r25c release format)
+android.ndk = r25c
 
 # (int) Android NDK API to use
 android.ndk_api = 21

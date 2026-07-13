@@ -28,9 +28,32 @@ jobs:
       run: |
         pip install --upgrade Cython==0.29.36 buildozer virtualenv
 
-    - name: Build with Buildozer
+    - name: Create Perfect Buildozer Spec and Build
       run: |
-        cp .github/workflows/buildozer.spec ./buildozer.spec
+        # Nayi perfect file direct create karna bina kisi extra space ke
+        cat << 'EOF' > buildozer.spec
+[app]
+title = Mega Paheli Universe
+package.name = megapaheliuniverse
+package.domain = com.paheli.universe
+source.dir = .
+source.include_exts = py,png,jpg,kv,atlas,mp3,wav,json
+requirements = python3,pygame,sdl2_image,sdl2_mixer,sdl2_ttf
+version = 1.0
+orientation = landscape
+fullscreen = 1
+android.api = 33
+android.minapi = 24
+android.ndk_api = 21
+android.private_storage = True
+android.accept_apk_terms = True
+
+[buildozer]
+log_level = 2
+warn_on_root = 0
+EOF
+
+        # Ab build process ko fire karna
         export BUILDOZER_WARN_ON_ROOT=0
         yes | buildozer android debug
 

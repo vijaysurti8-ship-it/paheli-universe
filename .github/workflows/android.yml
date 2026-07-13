@@ -1,19 +1,26 @@
-name: Build APK
+name: Build Android APK
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Setup Java
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
@@ -22,39 +29,34 @@ jobs:
     - name: Install System Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev liblzma-dev cmake
+        sudo apt-get install -y ccache git zip unzip openjdk-17-jdk targetcli-fb \
+        libncurses5-dev libstdc++6:i386 libgtk2.0-0:i386 libpangox-1.0-0:i386 \
+        libpangoxft-1.0-0:i386 libidn12:i386 autoconf libtool pkg-config zlib1g-dev \
+        libgl1-mesa-dev libgles2-mesa-dev python3-pip python3-setuptools
 
-    - name: Install Pip Packages
+    - name: Install Buildozer and Cython
       run: |
-        pip install --upgrade Cython==0.29.36 buildozer virtualenv
+        pip3 install --upgrade pip
+        pip3 install --upgrade buildozer cython virtualenv
 
-    - name: Create Buildozer Spec and Build
+    - name: Set up Android SDK & NDK
+      uses: android-actions/setup-android@v3
+      with:
+        api-level: 33
+        build-tools: 33.0.2
+        ndk-version: 25.2.9519653
+
+    - name: Build with Buildozer
       run: |
-        echo "[app]" > buildozer.spec
-        echo "title = Mega Paheli Universe" >> buildozer.spec
-        echo "package.name = megapaheliuniverse" >> buildozer.spec
-        echo "package.domain = com.paheli.universe" >> buildozer.spec
-        echo "source.dir = ." >> buildozer.spec
-        echo "source.include_exts = py,png,jpg,kv,atlas,mp3,wav,json" >> buildozer.spec
-        echo "requirements = python3==3.10.11,kivy,pygame,sdl2_image,sdl2_mixer,sdl2_ttf" >> buildozer.spec
-        echo "version = 1.0" >> buildozer.spec
-        echo "orientation = landscape" >> buildozer.spec
-        echo "fullscreen = 1" >> buildozer.spec
-        echo "android.api = 33" >> buildozer.spec
-        echo "android.minapi = 24" >> buildozer.spec
-        echo "android.ndk_api = 21" >> buildozer.spec
-        echo "android.private_storage = True" >> buildozer.spec
-        echo "android.accept_apk_terms = True" >> buildozer.spec
-        echo "" >> buildozer.spec
-        echo "[buildozer]" >> buildozer.spec
-        echo "log_level = 2" >> buildozer.spec
-        echo "warn_on_root = 0" >> buildozer.spec
-        export BUILDOZER_WARN_ON_ROOT=0
-        yes | buildozer android debug
+        # GitHub Runner par error se bachne ke liye ccache directory manually verify karna
+        mkdir -p ~/.ccache
+        buildozer android debug
+      env:
+        ANDROID_NDK_HOME: ${{ steps.setup-android.outputs.ndk-path }}
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Paheli-Universe-APK
+        name: package-apk
         path: bin/*.apk
         

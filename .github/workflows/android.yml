@@ -48,11 +48,20 @@ jobs:
     - name: Build with Buildozer
       run: |
         mkdir -p ~/.ccache
-        buildozer android debug
+        # Agar spec file kisi sub-folder me hai toh ye script wahan jaakar build karegi
+        SPEC_PATH=$(find . -name "buildozer.spec" -print -quit)
+        if [ -n "$SPEC_PATH" ]; then
+          cd "$(dirname "$SPEC_PATH")"
+          echo "Found buildozer.spec in $(pwd)"
+          buildozer android debug
+        else
+          echo "ERROR: buildozer.spec file aapki repository me kahin nahi mili!"
+          exit 1
+        fi
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: package-apk
-        path: bin/*.apk
-        
+        path: |
+          **/bin/*.apk
